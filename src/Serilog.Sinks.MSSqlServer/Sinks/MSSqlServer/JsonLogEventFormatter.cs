@@ -26,7 +26,7 @@ namespace Serilog.Sinks.MSSqlServer
     /// <summary>
     /// Custom JSON formatter to generate content for the LogEvent Standard Column.
     /// </summary>
-    internal class JsonLogEventFormatter : ITextFormatter
+    public class JsonLogEventFormatter : ITextFormatter
     {
         static readonly JsonValueFormatter ValueFormatter = new JsonValueFormatter(typeTagName: null);
         private const string COMMA_DELIMITER = ",";

@@ -25,18 +25,54 @@ using System.Text;
 namespace Serilog.Sinks.MSSqlServer
 {
     /// <summary>Contains common functionality and properties used by both MSSqlServerSinks.</summary>
-    internal sealed class MSSqlServerSinkTraits : IDisposable
+    public class MSSqlServerSinkTraits : IDisposable
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public string connectionString { get; }
+        /// <summary>
+        /// 
+        /// </summary>
         public string tableName { get; }
+        /// <summary>
+        /// 
+        /// </summary>
         public string schemaName { get; }
+        /// <summary>
+        /// 
+        /// </summary>
         public ColumnOptions columnOptions { get; }
+        /// <summary>
+        /// 
+        /// </summary>
         public IFormatProvider formatProvider { get; }
+        /// <summary>
+        /// 
+        /// </summary>
         public JsonLogEventFormatter jsonLogEventFormatter { get; }
+        /// <summary>
+        /// 
+        /// </summary>
         public ISet<string> additionalColumnNames { get; }
+        /// <summary>
+        /// 
+        /// </summary>
         public DataTable eventTable { get; }
+        /// <summary>
+        /// 
+        /// </summary>
         public ISet<string> standardColumnNames { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="connectionString"></param>
+        /// <param name="tableName"></param>
+        /// <param name="schemaName"></param>
+        /// <param name="columnOptions"></param>
+        /// <param name="formatProvider"></param>
+        /// <param name="autoCreateSqlTable"></param>
         public MSSqlServerSinkTraits(string connectionString, string tableName, string schemaName, ColumnOptions columnOptions, IFormatProvider formatProvider, bool autoCreateSqlTable)
         {
             if (string.IsNullOrWhiteSpace(connectionString))
@@ -88,7 +124,7 @@ namespace Serilog.Sinks.MSSqlServer
         /// <returns>
         /// A list of mappings between column names and values to emit to the database for the specified <paramref name="logEvent"/>.
         /// </returns>
-        public IEnumerable<KeyValuePair<string, object>> GetColumnsAndValues(LogEvent logEvent)
+        public virtual IEnumerable<KeyValuePair<string, object>> GetColumnsAndValues(LogEvent logEvent)
         {
             foreach (var column in columnOptions.Store)
             {
@@ -104,12 +140,21 @@ namespace Serilog.Sinks.MSSqlServer
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Dispose()
         {
             eventTable.Dispose();
         }
 
-        internal KeyValuePair<string, object> GetStandardColumnNameAndValue(StandardColumn column, LogEvent logEvent)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="column"></param>
+        /// <param name="logEvent"></param>
+        /// <returns></returns>
+        public KeyValuePair<string, object> GetStandardColumnNameAndValue(StandardColumn column, LogEvent logEvent)
         {
             switch (column)
             {
@@ -198,7 +243,7 @@ namespace Serilog.Sinks.MSSqlServer
         ///     Standard columns are not mapped
         /// </summary>        
         /// <param name="properties"></param>
-        private IEnumerable<KeyValuePair<string, object>> ConvertPropertiesToColumn(IReadOnlyDictionary<string, LogEventPropertyValue> properties)
+        public virtual IEnumerable<KeyValuePair<string, object>> ConvertPropertiesToColumn(IReadOnlyDictionary<string, LogEventPropertyValue> properties)
         {
             foreach (var property in properties)
             {

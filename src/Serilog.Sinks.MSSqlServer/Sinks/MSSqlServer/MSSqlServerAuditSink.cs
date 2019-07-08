@@ -20,6 +20,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using System.Collections.Generic;
 
 namespace Serilog.Sinks.MSSqlServer
 {
@@ -29,7 +30,7 @@ namespace Serilog.Sinks.MSSqlServer
     /// </summary>
     public class MSSqlServerAuditSink : ILogEventSink, IDisposable
     {
-        private readonly MSSqlServerSinkTraits _traits;
+        private MSSqlServerSinkTraits _traits;
 
         /// <summary>
         ///     Construct a sink posting to the specified database.
@@ -58,12 +59,27 @@ namespace Serilog.Sinks.MSSqlServer
             }
 
             _traits = new MSSqlServerSinkTraits(connectionString, tableName, schemaName, columnOptions, formatProvider, autoCreateSqlTable);
-            
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public MSSqlServerSinkTraits Traits { get { return _traits; } set { _traits = value; } }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logEvent"></param>
+        /// <returns></returns>
+        public virtual IEnumerable<KeyValuePair<string, object>> GetColumnsAndValues(LogEvent logEvent)
+        {
+            return _traits.GetColumnsAndValues(logEvent);
         }
 
         /// <summary>Emit the provided log event to the sink.</summary>
         /// <param name="logEvent">The log event to write.</param>
-        public void Emit(LogEvent logEvent)
+        public virtual void Emit(LogEvent logEvent)
         {
             try
             {
@@ -78,7 +94,7 @@ namespace Serilog.Sinks.MSSqlServer
                         StringBuilder parameterList = new StringBuilder(") VALUES (");
 
                         int index = 0;
-                        foreach (var field in _traits.GetColumnsAndValues(logEvent))
+                        foreach (var field in GetColumnsAndValues(logEvent))
                         {
                             if (index != 0)
                             {
@@ -90,7 +106,7 @@ namespace Serilog.Sinks.MSSqlServer
                             parameterList.Append("@P");
                             parameterList.Append(index);
 
-                            SqlParameter parameter = new SqlParameter($"@P{index}", field.Value ?? DBNull.Value);                            
+                            SqlParameter parameter = new SqlParameter($"@P{index}", field.Value ?? DBNull.Value);
 
                             // The default is SqlDbType.DateTime, which will truncate the DateTime value if the actual
                             // type in the database table is datetime2. So we explicitly set it to DateTime2, which will
@@ -117,7 +133,7 @@ namespace Serilog.Sinks.MSSqlServer
             {
                 SelfLog.WriteLine("Unable to write log event to the database due to following error: {1}", ex.Message);
                 throw;
-            }            
+            }
         }
 
         /// <summary>

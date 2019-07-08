@@ -11,7 +11,7 @@
     <AssemblyOriginatorKeyFile>../../assets/Serilog.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
-    <PackageId>Serilog.Sinks.MSSqlServer</PackageId>
+    <PackageId>Roc.Serilog.Sinks.MSSqlServer</PackageId>
     <PackageTags>serilog;sinks;mssqlserver</PackageTags>
     <PackageIconUrl>http://serilog.net/images/serilog-sink-nuget.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/serilog/serilog-sinks-mssqlserver</PackageProjectUrl>
@@ -22,6 +22,10 @@
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
     <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <AssemblyVersion>5.1.6.0</AssemblyVersion>
+    <FileVersion>5.1.6.0</FileVersion>
+    <Version>5.1.6</Version>
   </PropertyGroup>
 
   <ItemGroup>
